@@ -1,17 +1,29 @@
 import 'dotenv/config'
 import Express, { Application, Request, Response } from 'express'
+import HarvardartService from './harvardart.service'
 
 const port: string = process.env.PORT as string
+const harvardartApiEntrypoint: string = process.env.HARVARDART_API_ENTRYPOINT as string
+const harvardartApiKey: string = process.env.HARVARDART_API_KEY as string
 
 const app: Application = Express()
+const harvardartService = new HarvardartService(
+  harvardartApiEntrypoint,
+  harvardartApiKey
+)
 
 app.get('/prints', async (req: Request, res: Response) => {
-  const { page } = req.query
-  const pageNumber: number = parseInt(page as string)
-  if (page && isNaN(pageNumber)) {
-    throw { status: 403, message: 'expected number at param "page"' }
+  try {
+    const { page } = req.query
+    const pageNumber: number = parseInt(page as string)
+    if (page && isNaN(pageNumber)) {
+      throw { status: 403, message: 'expected number at param "page"' }
+    }
+    const prints = await harvardartService.getPrints(pageNumber)
+    res.send(prints)
+  } catch (e) {
+    console.error('/prints error', e)
   }
-  res.sendStatus(200)
 })
 
 app.listen(port, () => console.log('listening on port', port))
