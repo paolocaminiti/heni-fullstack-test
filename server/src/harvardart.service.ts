@@ -1,13 +1,37 @@
 import axios, { AxiosError } from 'axios'
 
 const printsQuery = {
-  fields: 'title,dated,description,primaryimageurl',
+  fields: 'title,dated,primaryimageurl',
   page: 1,
   size: 10,
   sort: 'rank',
   sortorder: 'desc',
   classification: 'Prints',
   verificationlevel: 4,
+}
+
+interface PrintsRecord {
+  title: string,
+  dated: string,
+  url: string,
+}
+
+interface PrintsResult {
+  isLastPage: boolean,
+  records: Array<PrintsRecord>,
+}
+
+interface HarvardartServiceError {
+  status: number
+}
+
+function asPrintsRecord (data: any): PrintsRecord {
+  const { title, dated, primaryimageurl } = data
+  return {
+    title,
+    dated,
+    url: primaryimageurl
+  }
 }
 
 class HarvardartService {
@@ -19,9 +43,9 @@ class HarvardartService {
     this.apiKey = apiKey
   }
 
-  async getPrints (page: number, size?: number) {
+  async getPrints (page: number, size?: number): Promise<PrintsResult> {
     try {
-      const response = await axios.get(`${this.apiEntrypoint}/object`, {
+      const { data } = await axios.get(`${this.apiEntrypoint}/object`, {
         params: {
           ...printsQuery,
           page,
@@ -29,18 +53,31 @@ class HarvardartService {
           apikey: this.apiKey,
         }
       })
-      console.log('HarvardartService.getPrints', response)
-      return response.data
-    } catch (e) {
-      const { response } = (e as AxiosError)
-      if (response) {
-        const { status } = response
-        console.error('HarvardartService.getPrints', status)
-      } else {
-        console.error('HarvardartService.getPrints', e)
+      // console.log('HarvardartService.getPrints', data)
+      if (!Array.isArray(data.records)) {
+        throw { status: 400 }
       }
+      const records = data.records.map(asPrintsRecord)
+      const isLastPage = data.info.page >= data.info.pages
+      return {
+        isLastPage,
+        records,
+      }
+    } catch (e) {
+      let status
+      const { isAxiosError } = e as AxiosError
+      if (isAxiosError) {
+        status = (e as AxiosError).response?.status || 0
+      } else {
+        status = (e as HarvardartServiceError).status || 500
+      }
+      console.error('HarvardartService.getPrints error', status)
+      throw { status }
     }
   }
 }
 
 export default HarvardartService
+export {
+  HarvardartServiceError
+}
