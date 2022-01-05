@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import Express, { Application, Request, Response } from 'express'
-import HarvardartService, { HarvardartServiceError } from './harvardart.service'
+import HarvardartService from './harvardart.service'
+import { GenericError } from './genericError'
 
 const port: string = process.env.PORT as string
 const harvardartApiEntrypoint: string = process.env.HARVARDART_API_ENTRYPOINT as string
@@ -17,18 +18,20 @@ app.get('/prints', async (req: Request, res: Response) => {
     const { page } = req.query
     const pageNumber: number = parseInt(page as string)
     if (page && isNaN(pageNumber)) {
-      throw { status: 400 }
+      throw { status: 400, message: 'Bad Request: expected integer at param "page"' }
     }
     const prints = await harvardartService.getPrints(pageNumber)
     res.send(prints)
   } catch (e) {
-    let status = (e as HarvardartServiceError).status || 500
+    let { status, message } = e as GenericError
     if (status) {
       if (status !== 400 && status < 500) {
         status = 503
       }
+    } else {
+      status = 500
     }
-    console.error('GET /prints error', status)
+    console.error('GET /prints error', status, message)
     res.sendStatus(status)
   }
 })

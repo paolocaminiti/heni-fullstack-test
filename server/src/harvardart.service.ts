@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios'
+import { GenericError } from './genericError'
 
 const printsQuery = {
   fields: 'title,dated,primaryimageurl',
@@ -19,10 +20,6 @@ interface PrintsRecord {
 interface PrintsResult {
   isLastPage: boolean,
   records: Array<PrintsRecord>,
-}
-
-interface HarvardartServiceError {
-  status: number
 }
 
 function asPrintsRecord (data: any): PrintsRecord {
@@ -54,7 +51,7 @@ class HarvardartService {
         }
       })
       if (!Array.isArray(data.records)) {
-        throw { status: 400 }
+        throw { status: 400, message: 'Bad Request: page is out of range' }
       }
       const records = data.records.map(asPrintsRecord)
       const isLastPage = data.info.page >= data.info.pages
@@ -63,20 +60,19 @@ class HarvardartService {
         records,
       }
     } catch (e) {
-      let status
-      const { isAxiosError } = e as AxiosError
-      if (isAxiosError) {
-        status = (e as AxiosError).response?.status || 0
-      } else {
-        status = (e as HarvardartServiceError).status || 500
+      let { status, message } = e as GenericError
+      if (!status) {
+        const { isAxiosError } = e as AxiosError
+        if (isAxiosError) {
+          status = (e as AxiosError).response?.status || 0
+        } else {
+          status = 500
+        }
       }
-      console.error('HarvardartService.getPrints error', status)
-      throw { status }
+      console.error('HarvardartService.getPrints error', status, message)
+      throw { status, message }
     }
   }
 }
 
 export default HarvardartService
-export {
-  HarvardartServiceError
-}
