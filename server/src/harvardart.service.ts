@@ -51,7 +51,10 @@ class HarvardartService {
         }
       })
       if (!Array.isArray(data.records)) {
-        throw { status: 400, message: 'Bad Request: page is out of range' }
+        throw {
+          status: 400,
+          message: 'Bad Request: query not supported'
+        }
       }
       const records = data.records.map(asPrintsRecord)
       const isLastPage = data.info.page >= data.info.pages
