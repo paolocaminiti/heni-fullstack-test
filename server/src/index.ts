@@ -17,18 +17,18 @@ app.get('/prints', async (req: Request, res: Response) => {
     const { page } = req.query
     const pageNumber: number = parseInt(page as string)
     if (page && isNaN(pageNumber)) {
-      throw { status: 400, message: 'expected number at param "page"' }
+      throw { status: 400 }
     }
     const prints = await harvardartService.getPrints(pageNumber)
     res.send(prints)
   } catch (e) {
     let status = (e as HarvardartServiceError).status || 500
     if (status) {
-      if (status < 500) {
+      if (status !== 400 && status < 500) {
         status = 503
       }
     }
-    console.error('/prints error', status)
+    console.error('GET /prints error', status)
     res.sendStatus(status)
   }
 })

@@ -53,7 +53,6 @@ class HarvardartService {
           apikey: this.apiKey,
         }
       })
-      // console.log('HarvardartService.getPrints', data)
       if (!Array.isArray(data.records)) {
         throw { status: 400 }
       }
