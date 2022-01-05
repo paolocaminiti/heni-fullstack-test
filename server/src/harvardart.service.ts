@@ -1,8 +1,13 @@
 import axios, { AxiosError } from 'axios'
 
 const printsQuery = {
+  fields: 'title,dated,description,primaryimageurl',
   page: 1,
   size: 10,
+  sort: 'rank',
+  sortorder: 'desc',
+  classification: 'Prints',
+  verificationlevel: 4,
 }
 
 class HarvardartService {
