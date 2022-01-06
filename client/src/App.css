@@ -5,3 +5,12 @@
 .world {
   position: relative;
 }
+
+.ani-flicker {
+  animation: .2s infinite flicker;
+  z-index: 2147483647;
+}
+
+@keyframes flicker {
+  50% { transform: scaleY(1.05); }
+}
