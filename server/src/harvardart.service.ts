@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-import { GenericError } from './genericError'
+import { GenericErrorStatus } from './genericErrorStatus'
 
 const printsQuery = {
   fields: 'title,dated,primaryimageurl',
@@ -11,15 +11,23 @@ const printsQuery = {
   verificationlevel: 4,
 }
 
+interface PrintsResult {
+  isLastPage: boolean,
+  prints: PrintsRecord[],
+}
+
 interface PrintsRecord {
   title: string,
   dated: string,
   url: string,
 }
 
-interface PrintsResult {
-  isLastPage: boolean,
-  records: Array<PrintsRecord>,
+interface HarvardartAPIResponseData {
+  info: {
+    page: number,
+    pages: number,
+  },
+  records: PrintsRecord[],
 }
 
 function asPrintsRecord (data: any): PrintsRecord {
@@ -42,7 +50,8 @@ class HarvardartService {
 
   async getPrints (page: number, size?: number): Promise<PrintsResult> {
     try {
-      const { data } = await axios.get(`${this.apiEntrypoint}/object`, {
+      const { data } = await axios.get<HarvardartAPIResponseData>(
+        `${this.apiEntrypoint}/object`, {
         params: {
           ...printsQuery,
           page,
@@ -50,20 +59,21 @@ class HarvardartService {
           apikey: this.apiKey,
         }
       })
-      if (!Array.isArray(data.records)) {
+      const { info, records } = data
+      if (!Array.isArray(records)) {
         throw {
-          status: 400,
-          message: 'Bad Request: query not supported'
+          status: 406,
+          message: 'Not Acceptable: query not supported'
         }
       }
-      const records = data.records.map(asPrintsRecord)
-      const isLastPage = data.info.page >= data.info.pages
+      const prints = records.map(asPrintsRecord)
+      const isLastPage = info.page >= info.pages
       return {
         isLastPage,
-        records,
+        prints,
       }
     } catch (e) {
-      let { status, message } = e as GenericError
+      let { status, message } = e as GenericErrorStatus
       if (!status) {
         const { isAxiosError } = e as AxiosError
         if (isAxiosError) {

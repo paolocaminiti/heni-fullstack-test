@@ -2,7 +2,7 @@ import 'dotenv/config'
 import Express, { Application, Request, Response } from 'express'
 import cors from 'cors'
 import HarvardartService from './harvardart.service'
-import { GenericError } from './genericError'
+import { GenericErrorStatus } from './genericErrorStatus'
 
 const port: string = process.env.PORT as string
 const harvardartApiEntrypoint: string = process.env.HARVARDART_API_ENTRYPOINT as string
@@ -26,9 +26,9 @@ app.get('/prints', async (req: Request, res: Response) => {
     const prints = await harvardartService.getPrints(pageNumber)
     res.send(prints)
   } catch (e) {
-    let { status, message } = e as GenericError
+    let { status, message } = e as GenericErrorStatus
     if (status) {
-      if (status !== 400 && status < 500) {
+      if (status < 500 && status !== 400 && status !== 406) {
         status = 503
       }
     } else {
