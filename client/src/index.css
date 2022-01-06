@@ -1,6 +1,7 @@
 * {
   box-sizing: border-box;
   cursor: crosshair;
+  user-select: none;
 }
 
 body {
@@ -10,4 +11,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: black;
+  overflow: hidden;
 }

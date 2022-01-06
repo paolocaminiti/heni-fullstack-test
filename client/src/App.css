@@ -1,15 +1,18 @@
-.App {
-  text-align: center;
-}
-
 .osd {
   position: fixed;
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding: 32px 64px 0 48px;
-  font-size: 48px;
+  padding: 32px 48px;
+  font-size: 32px;
   color: darkred;
+  text-shadow: 1px 1px red;
+  z-index: 1000000;
+}
+
+.osd .level {
+  width: 64px;
+  margin: 0 24px;
 }
 
 .world {
