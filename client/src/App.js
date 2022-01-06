@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import { World, Item } from 'react-dom-box2d'
 
 const PRINTS_API_ENTRYPOINT = 'http://localhost:3001/prints'
 
@@ -20,10 +21,16 @@ function Gallery () {
   const [isLastPage, setIsLastPage] = useState(false)
   const [records, setRecords] = useState(null)
 
-  useEffect(async () => {
-    const { records, isLastPage } = await (await fetch(`${PRINTS_API_ENTRYPOINT}?page=${page}`)).json()
-    setIsLastPage(isLastPage)
-    setRecords(records)
+  useEffect(() => {
+    async function fetchPrints (page) {
+      const { records: nextRecords, isLastPage } = await (
+        await fetch(`${PRINTS_API_ENTRYPOINT}?page=${page}`)
+      ).json()
+      console.log(nextRecords)
+      setIsLastPage(isLastPage)
+      setRecords([...(records || []), ...nextRecords])
+    }
+    fetchPrints(page)
   }, [page])
 
   return (
@@ -32,7 +39,25 @@ function Gallery () {
         Gallery page {page}
         {!isLastPage && <Next onClick={() => setPage(page + 1)} />}
       </div>
-      {records && records.map(Print)}
+      {records && <World
+        height={800}
+        width={800}
+        className="world"
+      >
+        {records.map(({ url }) => (
+          <Item
+            key={url}
+            restitution={0.2}
+            left={500}
+            top={0}
+            height={100}
+            width={100}
+            shape="circle"
+          >
+            <img src={url} />
+          </Item>
+        ))}
+      </World>}
     </div>
   )
 }
