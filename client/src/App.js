@@ -10,27 +10,22 @@ function Next ({ onClick }) {
   )
 }
 
-function Print ({ title, dated, url }) {
-  return (
-    <img key={url} src={url} width="256"/>
-  )
+async function fetchPrints (page) {
+  return await (await fetch(`${PRINTS_API_ENTRYPOINT}?page=${page}`)).json()
 }
 
 function Gallery () {
   const [page, setPage] = useState(1)
   const [isLastPage, setIsLastPage] = useState(false)
-  const [records, setRecords] = useState(null)
+  const [prints, setPrints] = useState([])
 
   useEffect(() => {
-    async function fetchPrints (page) {
-      const { records: nextRecords, isLastPage } = await (
-        await fetch(`${PRINTS_API_ENTRYPOINT}?page=${page}`)
-      ).json()
-      console.log(nextRecords)
+    async function runfetch () {
+      const { prints: nextPrints, isLastPage } = await fetchPrints(page)
       setIsLastPage(isLastPage)
-      setRecords([...(records || []), ...nextRecords])
+      setPrints([...prints, ...nextPrints])
     }
-    fetchPrints(page)
+    runfetch()
   }, [page])
 
   return (
@@ -39,20 +34,21 @@ function Gallery () {
         Gallery page {page}
         {!isLastPage && <Next onClick={() => setPage(page + 1)} />}
       </div>
-      {records && <World
+      {prints && <World
         height={800}
         width={800}
         className="world"
       >
-        {records.map(({ url }) => (
+        {prints.map(({ url }) => (
           <Item
+            dnd
             key={url}
             restitution={0.2}
-            left={500}
-            top={0}
+            left={128}
+            top={128}
             height={100}
             width={100}
-            shape="circle"
+            shape="box"
           >
             <img src={url} />
           </Item>
