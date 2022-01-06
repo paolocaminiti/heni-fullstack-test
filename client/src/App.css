@@ -2,11 +2,22 @@
   text-align: center;
 }
 
+.osd {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 32px 64px 0 48px;
+  font-size: 48px;
+  color: darkred;
+}
+
 .world {
   position: relative;
 }
 
-.ani-flicker {
+.flame {
+  position: absolute;
   animation: .2s infinite flicker;
   z-index: 2147483647;
 }
