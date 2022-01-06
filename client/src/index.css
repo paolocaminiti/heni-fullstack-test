@@ -30,6 +30,7 @@ body {
 .osd .level {
   width: 64px;
   margin: 0 24px;
+  text-align: center;
 }
 
 .world {

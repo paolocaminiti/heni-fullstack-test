@@ -1,6 +1,8 @@
 import axios, { AxiosError } from 'axios'
 import { GenericErrorStatus } from './genericErrorStatus'
 
+// API REFERENCE: https://github.com/harvardartmuseums/api-docs/blob/master/sections/object.md
+
 const printsQuery = {
   fields: 'title,dated,primaryimageurl',
   page: 1,

@@ -1,7 +1,7 @@
-const PRINTS_API_ENTRYPOINT = 'http://localhost:3001/prints'
+const printsAPIEntrypoint = process.env.REACT_APP_PRINTS_API_ENTRYPOINT
 
 async function fetchPrints (page) {
-  return await (await fetch(`${PRINTS_API_ENTRYPOINT}?page=${page}`)).json()
+  return await (await fetch(`${printsAPIEntrypoint}/prints?page=${page}`)).json()
 }
 
 export {
