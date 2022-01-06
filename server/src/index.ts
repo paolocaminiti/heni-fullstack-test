@@ -43,4 +43,4 @@ app.get('/prints', async (req: Request, res: Response) => {
   }
 })
 
-app.listen(port, () => console.log('listening on port', port))
+module.exports = app.listen(port, () => console.log('listening on port', port))
