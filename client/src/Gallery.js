@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { World, Item } from 'react-dom-box2d'
-import { PRINT_SIDE_PX, MESSAGE_WELLCOME, MESSAGE_ENDGAME} from './constants'
+import { PRINT_SIDE_PX, MESSAGE_WELLCOME, MESSAGE_ENDGAME, MESSAGE_503} from './constants'
 import { fetchPrints } from './api'
 import { getDimensions, getSpawnPoint } from './utils'
 import OSD from './OSD'
@@ -14,9 +14,15 @@ export default function Gallery () {
 
   useEffect(() => {
     async function getPrints () {
-      const { prints: nextPrints, isLastPage } = await fetchPrints(page)
-      setIsLastPage(isLastPage)
-      setPrints([...prints, ...nextPrints])
+      try {
+        const { prints: nextPrints, isLastPage } = await fetchPrints(page)
+        setIsLastPage(isLastPage)
+        setPrints([...prints, ...nextPrints])
+      } catch (e) {
+        if (e.status === 503) {
+          setTitle(MESSAGE_503)
+        }
+      }
     }
     getPrints()
   }, [page])

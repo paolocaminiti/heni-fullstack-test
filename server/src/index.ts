@@ -30,6 +30,7 @@ app.get('/prints', async (req: Request, res: Response) => {
     if (status) {
       if (status < 500 && status !== 400 && status !== 406) {
         status = 503
+        message = 'Service Unavailable'
       }
     } else {
       status = 500

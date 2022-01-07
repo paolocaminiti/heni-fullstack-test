@@ -44,5 +44,5 @@ body {
 }
 
 @keyframes flicker {
-  50% { transform: scaleY(1.05); }
+  25% { transform: scaleY(1.05); }
 }
