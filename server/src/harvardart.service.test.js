@@ -37,7 +37,7 @@ it('Should throw 401 with bad api key', async () => {
   }
 })
 
-it('Should throw 406 with bad page param', async () => {
+it('Should throw 406 with unsupported page param', async () => {
   axios.get = jest.fn().mockResolvedValue({ status: 200, data: mockInvalidResponseData })
 
   const harvardartService = new HarvardartService('http://example.com', 'key')

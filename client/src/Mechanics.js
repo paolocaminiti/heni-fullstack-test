@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { MESSAGE_WELLCOME, MESSAGE_ENDGAME, MESSAGE_503} from './constants'
 import { fetchPrints } from './api'
 import { getDimensions } from './utils'
+import { playFireSFX } from './Audio'
 import OSD from './OSD'
 import Simulation from './Simulation'
 
@@ -30,8 +31,7 @@ export default function Mechanics () {
   }, [page])
 
   const destroyPrintHandler = useCallback(url => {
-    const sfx = window.firesfx.cloneNode(true)
-    sfx.play()
+    playFireSFX()
     const target = prints.find(i => i.url === url)
     const nextTitle = `${target.title} from ${target.dated} destroyed!`
     setTitle(nextTitle)

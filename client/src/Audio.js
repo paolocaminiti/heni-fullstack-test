@@ -5,3 +5,8 @@ export default function Audio () {
     </audio>
   )
 }
+
+export function playFireSFX () {
+  const sfx = window.firesfx.cloneNode(true)
+  sfx.play()
+}
