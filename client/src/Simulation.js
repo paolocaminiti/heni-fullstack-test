@@ -1,6 +1,6 @@
 import { World, Item } from 'react-dom-box2d'
 import { PRINT_SIDE_PX } from './constants'
-import { getSpawnPoint } from './utils'
+import { getSpawnPoint, getResizedImageURL } from './utils'
 
 export default function Simulation ({ prints, dimensions, destroyPrintHandler }) {
   return (
@@ -12,6 +12,7 @@ export default function Simulation ({ prints, dimensions, destroyPrintHandler })
     >
       {prints.map(({ url }) => {
         const { x, y } = getSpawnPoint(dimensions, PRINT_SIDE_PX)
+        const src = getResizedImageURL(url, PRINT_SIDE_PX)
         return (
           <Item
             key={url}
@@ -22,7 +23,7 @@ export default function Simulation ({ prints, dimensions, destroyPrintHandler })
             width={PRINT_SIDE_PX}
             shape="box"
           >
-            <img src={url} onClick={e => destroyPrintHandler(url)} />
+            <img src={src} onClick={e => destroyPrintHandler(url)} />
           </Item>
         )
       })}

@@ -10,3 +10,9 @@ export function getSpawnPoint(dimensions, objectSize) {
     y: objectSize,
   }
 }
+
+export function getResizedImageURL (url, objectSize) {
+  const retinaSize = objectSize * 2
+  const resizedImageURL = `${url}?height=${retinaSize}&width=${retinaSize}`
+  return resizedImageURL
+}
