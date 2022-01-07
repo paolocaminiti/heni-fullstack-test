@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "ts-node --transpile-only src/index.ts",
     "dev": "ts-node-dev --respawn --pretty --transpile-only src/index.ts",
-    "test": "jest --silent"
+    "test": "jest --silent",
+    "test:dev": "jest --runInBand --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",

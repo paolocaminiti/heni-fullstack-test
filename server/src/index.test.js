@@ -1,12 +1,11 @@
-const app = require('./index')
+const app = (require('./index')).default
 const supertest = require('supertest')
 const request = supertest(app)
 const axios = require('axios')
 jest.mock('axios')
 
-afterAll(done => {
+afterAll(() => {
   app.close()
-  done()
 })
 
 const mockValidResponseData = {
@@ -19,29 +18,27 @@ const mockValidResponseData = {
 
 const mockInvalidResponseData = {}
 
+const expectedPrintsResultFields = ['isLastPage', 'prints']
+const expectedPrintsRecordFields = ['title', 'dated', 'url']
+
 it('Should retrieve prints from Harvardart', async () => {
   axios.get = jest.fn().mockResolvedValue({ status: 200, data: mockValidResponseData })
 
-  const expectedFields = ['isLastPage', 'prints']
-  const expectedPrintFields = ['title', 'dated', 'url']
   const res = await request.get('/prints')
   
   expect(res.status).toBe(200)
-  expect(Object.keys(res.body)).toEqual(expect.arrayContaining(expectedFields))
-  expect(Object.keys(res.body.prints[0])).toEqual(expect.arrayContaining(expectedPrintFields))
+  expect(Object.keys(res.body)).toEqual(expect.arrayContaining(expectedPrintsResultFields))
+  expect(Object.keys(res.body.prints[0])).toEqual(expect.arrayContaining(expectedPrintsRecordFields))
 })
 
 it('Should retrieve paginated prints from Harvardart', async () => {
   axios.get = jest.fn().mockResolvedValue({ status: 200, data: mockValidResponseData })
 
-  const expectedFields = ['isLastPage', 'prints']
-  const expectedPrintFields = ['title', 'dated', 'url']
   const res = await request.get('/prints?page=10')
   
   expect(res.status).toBe(200)
-  expect(Object.keys(res.body)).toEqual(expect.arrayContaining(expectedFields))
-  expect(res.body.prints).toBeInstanceOf(Array)
-  expect(Object.keys(res.body.prints[0])).toEqual(expect.arrayContaining(expectedPrintFields))
+  expect(Object.keys(res.body)).toEqual(expect.arrayContaining(expectedPrintsResultFields))
+  expect(Object.keys(res.body.prints[0])).toEqual(expect.arrayContaining(expectedPrintsRecordFields))
 })
 
 it('Should 400 with bad page param', async () => {

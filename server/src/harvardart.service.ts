@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-import { GenericErrorStatus } from './genericErrorStatus'
+import { GenericErrorStatus } from './types'
 
 // API REFERENCE: https://github.com/harvardartmuseums/api-docs/blob/master/sections/object.md
 

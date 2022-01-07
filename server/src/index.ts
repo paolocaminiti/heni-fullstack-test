@@ -2,7 +2,7 @@ import 'dotenv/config'
 import Express, { Application, Request, Response } from 'express'
 import cors from 'cors'
 import HarvardartService from './harvardart.service'
-import { GenericErrorStatus } from './genericErrorStatus'
+import { GenericErrorStatus } from './types'
 
 const port: string = process.env.PORT as string
 const harvardartApiEntrypoint: string = process.env.HARVARDART_API_ENTRYPOINT as string
@@ -43,4 +43,4 @@ app.get('/prints', async (req: Request, res: Response) => {
   }
 })
 
-module.exports = app.listen(port, () => console.log('listening on port', port))
+export default app.listen(port, () => console.log('listening on port', port))
