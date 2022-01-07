@@ -26,7 +26,7 @@ it('Should return PrintsResult with an array of PrintsRecord', async () => {
 })
 
 it('Should throw 401 with bad api key', async () => {
-  axios.get = jest.fn().mockResolvedValue({ status: 401, data: mockValidResponseData })
+  axios.get = jest.fn().mockRejectedValue({ status: 401, isAxiosError: true })
 
   const harvardartService = new HarvardartService('http://example.com', 'bad key')
   
