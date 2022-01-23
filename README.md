@@ -45,4 +45,4 @@ repository.
 5. Add any tests you feel are required, where necessary.
 ```
 
-Requires a valid api key in the /server/.env to run.
+Requires a valid api key in /server/.env to run.
